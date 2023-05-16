@@ -4,9 +4,9 @@ use tonic::transport::Certificate;
 
 #[derive(Debug)]
 pub struct Auth {
-    ca: Certificate,
-    cert: Certificate,
-    key: Certificate,
+    pub ca: Certificate,
+    pub cert: Certificate,
+    pub key: Certificate,
 }
 
 impl Auth {
