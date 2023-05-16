@@ -12,9 +12,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
     let auth = Auth::new(ca_path, cert_path, key_path);
 
     let mut client = Client::new("http://[::1]:5060", auth?).await?;
-    let message = client.get();
+    let messages = client.get();
 
-    println!("Message: {:?}", message.await?);
+    for message in messages.await? {
+        println!("{}", message.output);
+    }
 
     Ok(())
 }

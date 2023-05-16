@@ -31,11 +31,24 @@ impl Client {
         Ok(service)
     }
 
-    pub async fn get(&mut self) -> Result<Response, Box<dyn Error>>{
+    pub async fn get(&mut self) -> Result<Vec<Response>, Box<dyn Error>>{
         let request = tonic::Request::new(Request {});
-        let response = self.service.get(request).await?;
-        let message = response.into_inner().message().await?.unwrap();
+        let mut response = self.service.get(request).await?.into_inner();
 
-        Ok(message)
+        let mut vec = Vec::new();
+
+        let mut next_message = response.message().await?;
+
+        loop {
+            if !next_message.is_none() {
+                vec.push(next_message.unwrap());
+                next_message = response.message().await?
+            } else {
+                break;
+            }
+        }
+
+
+        Ok(vec)
     }
 }
