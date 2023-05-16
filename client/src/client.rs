@@ -1,11 +1,11 @@
 use crate::config::Auth;
-use crate::falco::{service_client::ServiceClient, Request};
+use crate::falco::{service_client::ServiceClient, Request, Response};
 use tonic::transport::{Certificate, Channel, ClientTlsConfig, Identity};
 use std::error::Error;
 
 #[derive(Debug)]
 pub struct Client {
-    service: ServiceClient<Channel>,
+    pub service: ServiceClient<Channel>,
 }
 
 impl Client {
@@ -29,5 +29,13 @@ impl Client {
         };
 
         Ok(service)
+    }
+
+    pub async fn get(&mut self) -> Result<Response, Box<dyn Error>>{
+        let request = tonic::Request::new(Request {});
+        let response = self.service.get(request).await?;
+        let message = response.into_inner().message().await?.unwrap();
+
+        Ok(message)
     }
 }
