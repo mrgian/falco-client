@@ -9,6 +9,7 @@ pub struct Client {
 }
 
 impl Client {
+    //create a new gRPC client to endpoint authenticating using given auth
     pub async fn new(endpoint: &'static str, auth: Auth) -> Result<Client, Box<dyn Error>>{
         let identity = Identity::from_pem(auth.cert, auth.key);
 
@@ -31,6 +32,7 @@ impl Client {
         Ok(service)
     }
 
+    //get all pending messages and stores them in a vector
     pub async fn get(&mut self) -> Result<Vec<Response>, Box<dyn Error>>{
         let request = tonic::Request::new(Request {});
         let mut response = self.service.get(request).await?.into_inner();
@@ -47,7 +49,6 @@ impl Client {
                 break;
             }
         }
-
 
         Ok(vec)
     }

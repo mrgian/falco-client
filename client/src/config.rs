@@ -2,14 +2,16 @@ use std::path::PathBuf;
 use std::error::Error;
 use tonic::transport::Certificate;
 
+//certificates for tls authentication
 #[derive(Debug)]
 pub struct Auth {
-    pub ca: Certificate,
-    pub cert: Certificate,
-    pub key: Certificate,
+    pub ca: Certificate, //root ca certificate
+    pub cert: Certificate, //client certificate
+    pub key: Certificate, //client private key
 }
 
 impl Auth {
+    //creates new auth using certificates from the given paths
     pub fn new(ca_path: PathBuf, cert_path: PathBuf, key_path: PathBuf) -> Result<Self, Box<dyn Error>> {
         let ca_string = std::fs::read_to_string(ca_path)?;
         let cert_string = std::fs::read_to_string(cert_path)?;
